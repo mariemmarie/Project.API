@@ -44,6 +44,15 @@ namespace Project.Ui
             services.AddScoped<IConsultantsRepository, ConsultantsRepository>();
             services.AddScoped<IUoW, UoW>();
             services.AddAutoMapper(typeof(MapperProfile));
+            services.AddCors(options => options.AddPolicy("Open", builder =>
+            {
+                builder.AllowAnyOrigin();
+                builder.AllowAnyHeader();
+                builder.AllowAnyMethod();
+
+
+
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,7 +69,7 @@ namespace Project.Ui
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseCors("Open");
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
