@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Project.Core.Dto;
 using Project.Core.Entities;
@@ -85,6 +86,47 @@ namespace Project.Ui.Controllers
                 return StatusCode(500);
             }
            
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutCourse(int id, [FromBody] PutConsultantDto dto)
+        {
+            var consultant = await uoW.ConsultantsRepository.GetConsultant(id);
+            if (consultant is null)
+            {
+                return NotFound();
+            }
+
+            mapper.Map(dto, consultant);
+            if (await uoW.ConsultantsRepository.SaveAsync())
+            {
+                return Ok(mapper.Map<PutConsultantDto>(consultant));
+            }
+            else
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPatch("{id:int}")]
+        public async Task<ActionResult<PatchConsultantDto>> PatchCourse(int id, [FromBody] JsonPatchDocument<PatchConsultantDto> patchDocument)
+        {
+            var consultant = await uoW.ConsultantsRepository.GetConsultant(id);
+            if (consultant is null)
+            {
+                return NotFound();
+            }
+            var dto = mapper.Map<PatchConsultantDto>(consultant);
+            patchDocument.ApplyTo(dto, ModelState);
+            if (!TryValidateModel(dto))
+                return BadRequest(ModelState);
+
+            mapper.Map(dto, consultant);
+            if (await uoW.ConsultantsRepository.SaveAsync())
+                return Ok(mapper.Map<PatchConsultantDto>(consultant));
+            else
+                return StatusCode(500);
+
+
         }
     }
 }

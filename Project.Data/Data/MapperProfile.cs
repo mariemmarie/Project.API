@@ -15,6 +15,11 @@ namespace Project.Data.Data
         {
             CreateMap<Consultant, AddConsultantDto>().ReverseMap();
             CreateMap<Consultant, GetConsultantDto>().ReverseMap();
+            CreateMap<Consultant, PutConsultantDto>().ReverseMap()
+               .ForMember(from => from.Id, opt => opt.Ignore());
+
+
+            CreateMap<Consultant, PatchConsultantDto>().ReverseMap();
         }
     }
 }
