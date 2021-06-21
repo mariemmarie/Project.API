@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Project.Core.Entities;
 using Project.Core.Repositories;
 using Project.Data.Data;
@@ -10,7 +11,8 @@ using System.Threading.Tasks;
 
 namespace Project.Data.Repositories
 {
-  public  class ConsultantsRepository : IConsultantsRepository
+    [Route("api/consultants")]
+    public  class ConsultantsRepository : IConsultantsRepository
     {
         private readonly ProjectAppDbContext db;
 
@@ -25,14 +27,19 @@ namespace Project.Data.Repositories
         }
 
         public async Task<IEnumerable<Consultant>> GetAllConsultants()
-        {
+        { 
            return await db.Consultants.ToListAsync();
         }
+
+        [HttpGet("{id}")]
+        [Route("GetConsultantById")]
 
         public async Task<Consultant> GetConsultant(int id)
         {
           return await db.Consultants.FindAsync(id);
         }
+        [HttpDelete("{id}")]
+        [Route("DeleteConsultant")]
 
         public void Remove(Consultant consultant)
         {
@@ -42,6 +49,23 @@ namespace Project.Data.Repositories
         public async Task<bool> SaveAsync()
         {
             return (await db.SaveChangesAsync()) >= 0;
+        }
+
+        [HttpPost]
+        [Route("InsertConsultant")]
+        public void PostConsultant(Consultant consultant)
+        {
+            
+
+          
+        }
+
+        [HttpPost]
+        [Route("UpdateConsultant")]
+        public void PutConsultant(Consultant consultant)
+        {
+
+
         }
     }
 }
